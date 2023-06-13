@@ -1,0 +1,8 @@
+###GET
+http://localhost:8080/student/findAll
+
+###POST
+http://localhost:8080/student?1&alex
+
+###GET
+http://localhost:8080/student/
