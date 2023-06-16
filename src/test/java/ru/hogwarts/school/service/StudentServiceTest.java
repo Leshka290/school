@@ -1,43 +1,73 @@
 package ru.hogwarts.school.service;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 import ru.hogwarts.school.model.Student;
+import ru.hogwarts.school.repository.StudentRepository;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@ExtendWith(MockitoExtension.class)
 public class StudentServiceTest {
 
-    private final StudentService studentService = new StudentService();
-    private final Student studentTest = new Student("Max", 25);
+    @InjectMocks
+    private StudentService studentService;
+
+    @Mock
+    private StudentRepository studentRepository;
+    private final Student studentTest = new Student();
+
+    public Student getStudentTest(Student student) {
+        student.setId(1);
+        student.setName("Petr");
+        student.setAge(30);
+        return student;
+    }
 
     @Test
-    public void shouldCreateFaculty() {
+    public void shouldCreateStudent() {
+        Mockito.when(studentRepository.save(studentTest)).thenReturn(getStudentTest(studentTest));
+
+        assertNotNull(studentRepository);
+        assertNotNull(studentService.createStudent(studentTest));
         assertEquals(studentTest, studentService.createStudent(studentTest));
     }
 
     @Test
-    public void shouldGetFacultyById() {
+    public void shouldGetStudentById() {
+        Mockito.when(studentRepository.save(studentTest)).thenReturn(getStudentTest(studentTest));
+        Mockito.when(studentRepository.getReferenceById(studentTest.getId())).thenReturn(getStudentTest(studentTest));
+
         studentService.createStudent(studentTest);
+        studentRepository.save(studentTest);
 
         assertEquals(studentTest, studentService.getStudentById(studentTest.getId()));
     }
 
     @Test
-    public void shouldUpdateFaculty() {
-        Student studentUpdate = new Student("Petr", 30);
+    public void shouldUpdateStudent() {
+        Student studentUpdate = new Student();
+
+        Mockito.when(studentRepository.save(studentTest)).thenReturn(getStudentTest(studentTest));
+        Mockito.when(studentRepository.save(studentUpdate)).thenReturn(studentUpdate);
 
         studentService.createStudent(studentTest);
-        studentService.updateStudent(studentTest.getId(), studentUpdate);
+        studentService.updateStudent(studentUpdate);
 
-        assertEquals(studentUpdate, studentService.getStudentById(studentTest.getId()));
+        assertEquals(studentUpdate, studentService.updateStudent(studentUpdate));
     }
 
     @Test
-    public void shouldDeleteFaculty() {
+    public void shouldDeleteStudent() {
+        Mockito.when(studentRepository.save(studentTest)).thenReturn(getStudentTest(studentTest));
+
         studentService.createStudent(studentTest);
         studentService.deleteStudent(studentTest.getId());
 
@@ -46,10 +76,12 @@ public class StudentServiceTest {
 
     @Test
     public void shouldFindAll() {
-        final Collection<Student> studentCollectionTest = new ArrayList<>(List.of(studentTest));
+        final List<Student> studentListTest = new ArrayList<>(List.of(studentTest));
+
+        Mockito.when(studentRepository.findAll()).thenReturn(studentListTest);
 
         studentService.createStudent(studentTest);
 
-        assertTrue(studentService.findAll().containsAll(studentCollectionTest));
+        assertTrue(studentService.findAll().containsAll(studentListTest));
     }
 }

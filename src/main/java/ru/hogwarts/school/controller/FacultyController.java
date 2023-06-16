@@ -1,5 +1,6 @@
 package ru.hogwarts.school.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -7,7 +8,6 @@ import ru.hogwarts.school.model.Faculty;
 import ru.hogwarts.school.service.FacultyService;
 
 import java.util.Collection;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("faculty")
@@ -20,93 +20,59 @@ public class FacultyController {
     }
 
     @PostMapping
-    public ResponseEntity<?> createStudent(@RequestBody Faculty faculty) {
+    @Operation(summary = "Создание факультета")
+    public ResponseEntity<?> createFaculty(@RequestBody Faculty faculty) {
         Faculty createFaculty = facultyService.createFaculty(faculty);
         return ResponseEntity.ok(createFaculty);
     }
 
     @GetMapping("/findAll")
+    @Operation(summary = "Получение всех факультетов")
     public Collection<Faculty> findAll() {
         return facultyService.findAll();
     }
 
     @GetMapping("{facultyId}")
+    @Operation(summary = "Получение факультета по id")
     public ResponseEntity<?> getFacultyById(@PathVariable long facultyId) {
         Faculty faculty = facultyService.getFacultyById(facultyId);
-        if(faculty == null) {
+        if (faculty == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
         return ResponseEntity.ok(faculty);
     }
 
     @PutMapping
+    @Operation(summary = "Изменение факультета")
     public ResponseEntity<?> updateFaculty(@RequestBody Faculty faculty) {
-        Faculty updateFaculty = facultyService.updateFaculty(faculty.getId(), faculty);
+        Faculty updateFaculty = facultyService.updateFaculty(faculty);
         return ResponseEntity.ok(updateFaculty);
     }
 
     @DeleteMapping("{facultyId}")
+    @Operation(summary = "Удаление факультета по di")
     public ResponseEntity<?> deleteFaculty(@PathVariable long facultyId) {
-        Faculty faculty = facultyService.deleteFaculty(facultyId);
-        if(faculty == null) {
+        Faculty faculty = facultyService.getFacultyById(facultyId);
+        facultyService.deleteFaculty(facultyId);
+        if (faculty == null) {
             return ResponseEntity.ok(null);
         }
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
     }
 
-    @GetMapping("/filterColor/{color}")
-    public ResponseEntity<?> filterFacultyByColor(@PathVariable String color) {
-        Collection<Faculty> facultyCollection = facultyService.findAll().stream()
-                .filter(e -> e.getColor().equals(color))
-                .collect(Collectors.toList());
-        return ResponseEntity.ok(facultyCollection);
+    @DeleteMapping()
+    @Operation(summary = "Удаление факультета")
+    public ResponseEntity<?> deleteFaculty(@RequestBody Faculty faculty) {
+        facultyService.deleteFaculty(faculty);
+        if (faculty == null) {
+            return ResponseEntity.ok(null);
+        }
+        return ResponseEntity.badRequest().build();
     }
 
-//    @GetMapping("/save")
-//    public Faculty save(@RequestParam String name, @RequestParam String color) {
-//        Faculty faculty = new Faculty(name, color);
-//        return facultyService.save(faculty);
-//    }
-//
-//    @GetMapping("/{id}")
-//    public ResponseEntity findById(@PathVariable long id) {
-//
-//        return ResponseEntity.ok(facultyService.findById(id));
-//    }
-//
-//    @GetMapping("/{name}")
-//    public Faculty findByName(@PathVariable String name) {
-//        return facultyService.findByName(name);
-//    }
-//
-//    @GetMapping("/findAll")
-//    public Collection<Faculty> findAll() {
-//        return facultyService.findAll();
-//    }
-//
-//    @PutMapping("/updateName")
-//    public ResponseEntity updateName(@RequestParam long id, @RequestParam String name) {
-//
-//        return facultyService.updateName(id, name);
-//    }
-//
-//    @PutMapping("/updateColor")
-//    public Faculty updateColor(@RequestParam long id, @RequestParam String color) {
-//        return facultyService.updateColor(id, color);
-//    }
-//
-//    @GetMapping("/deleteById")
-//    public boolean delete(@RequestParam long id) {
-//        return facultyService.delete(id);
-//    }
-//
-//    @GetMapping("/deleteByName")
-//    public boolean delete(@RequestParam String name) {
-//        return facultyService.delete(name);
-//    }
-//
-//    @GetMapping("/deleteAll")
-//    public boolean deleteAll() {
-//        return facultyService.deleteAll();
-//    }
+    @GetMapping("/filterColor/{color}")
+    @Operation(summary = "Получение факультетов с фильтром по цвету")
+    public ResponseEntity<?> filterFacultyByColor(@PathVariable String color) {
+        return ResponseEntity.ok(facultyService.filterFacultyByColor(color));
+    }
 }
