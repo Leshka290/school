@@ -43,8 +43,7 @@ public class StudentServiceTest {
     @Test
     public void shouldGetStudentById() {
         Mockito.when(studentRepository.save(studentTest)).thenReturn(getStudentTest(studentTest));
-        Mockito.when(studentRepository.getReferenceById(studentTest.getId())).thenReturn(getStudentTest(studentTest));
-
+        Mockito.when(studentRepository.getById(studentTest.getId())).thenReturn(getStudentTest(studentTest));
         studentService.createStudent(studentTest);
         studentRepository.save(studentTest);
 

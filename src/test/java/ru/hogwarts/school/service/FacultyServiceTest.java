@@ -44,8 +44,7 @@ public class FacultyServiceTest {
     @Test
     public void shouldGetFacultyById() {
         Mockito.when(facultyRepository.save(facultyTest)).thenReturn(getFacultyTest(facultyTest));
-        Mockito.when(facultyRepository.getReferenceById(facultyTest.getId())).thenReturn(getFacultyTest(facultyTest));
-
+        Mockito.when(facultyRepository.getById(facultyTest.getId())).thenReturn(getFacultyTest(facultyTest));
         facultyService.createFaculty(facultyTest);
         facultyRepository.save(facultyTest);
 

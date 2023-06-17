@@ -23,7 +23,10 @@ public class FacultyService {
     }
 
     public Faculty getFacultyById(long facultyId) {
-        return facultyRepository.getReferenceById(facultyId);
+        return facultyRepository.getById(facultyId);
+//        return facultyRepository.findAll().stream()
+//                .filter(e -> e.getId() == facultyId)
+//                .findFirst().orElseThrow();
     }
 
     public Faculty updateFaculty(Faculty faculty) {
