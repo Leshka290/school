@@ -3,9 +3,11 @@ package ru.hogwarts.school.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.hogwarts.school.model.Faculty;
+import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.repository.FacultyRepository;
 
 import java.util.Collection;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -22,8 +24,8 @@ public class FacultyService {
         return facultyRepository.save(faculty);
     }
 
-    public Faculty getFacultyById(long facultyId) {
-        return facultyRepository.getById(facultyId);
+    public Optional<Faculty> getFacultyById(long facultyId) {
+        return facultyRepository.findById(facultyId);
 //        return facultyRepository.findAll().stream()
 //                .filter(e -> e.getId() == facultyId)
 //                .findFirst().orElseThrow();
@@ -45,5 +47,17 @@ public class FacultyService {
         return facultyRepository.findAll().stream()
                 .filter(e -> e.getColor().equals(color))
                 .collect(Collectors.toList());
+    }
+
+    public Faculty findFacultiesByNameOrColor(String nameOrColor) {
+        return facultyRepository.findAll().stream()
+                .filter(e -> e.getName().equalsIgnoreCase(nameOrColor) || e.getColor().equalsIgnoreCase(nameOrColor))
+                .findFirst().orElseThrow();
+    }
+
+    public Faculty findFacultiesByStudent(Student student) {
+        return facultyRepository.findAll().stream()
+                .peek(e -> e.getStudentList().get((int)student.getId()))
+                .findFirst().orElseThrow();
     }
 }

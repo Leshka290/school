@@ -7,6 +7,7 @@ import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.service.StudentService;
 
 import java.util.Collection;
+import java.util.Optional;
 
 @RequestMapping("student")
 @RestController
@@ -34,8 +35,8 @@ public class StudentController {
     @GetMapping("{studentId}")
     @Operation(summary = "Получение студента по id")
     public ResponseEntity<?> getStudentById(@PathVariable long studentId) {
-        Student student = studentService.getStudentById(studentId);
-        if (student == null) {
+        Optional<Student> student = studentService.getStudentById(studentId);
+        if (student.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(student);
@@ -51,9 +52,9 @@ public class StudentController {
     @DeleteMapping("{studentId}")
     @Operation(summary = "Удаление студента по id")
     public ResponseEntity<?> deleteStudent(@PathVariable long studentId) {
-        Student student = studentService.getStudentById(studentId);
+        Optional<Student> student = studentService.getStudentById(studentId);
         studentService.deleteStudent(studentId);
-        if (student == null) {
+        if (student.isEmpty()) {
             return ResponseEntity.ok(null);
         }
         return ResponseEntity.badRequest().build();
@@ -73,5 +74,11 @@ public class StudentController {
     @Operation(summary = "Получение студентов с фильтром по возрасту")
     public ResponseEntity<?> getFilterStudentByAge(@PathVariable int age) {
         return ResponseEntity.ok(studentService.filterStudentByAge(age));
+    }
+
+    @GetMapping("/findByAgeBetween")
+    @Operation(summary = "Получение всех студентов")
+    public Collection<Student> findByAgeBetween(@PathVariable int ageMin, @PathVariable int ageMax) {
+        return studentService.findByAgeBetween(ageMin, ageMax);
     }
 }

@@ -11,6 +11,7 @@ import ru.hogwarts.school.repository.FacultyRepository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -44,11 +45,11 @@ public class FacultyServiceTest {
     @Test
     public void shouldGetFacultyById() {
         Mockito.when(facultyRepository.save(facultyTest)).thenReturn(getFacultyTest(facultyTest));
-        Mockito.when(facultyRepository.getById(facultyTest.getId())).thenReturn(getFacultyTest(facultyTest));
+        Mockito.when(facultyRepository.findById(facultyTest.getId())).thenReturn(Optional.ofNullable(getFacultyTest(facultyTest)));
         facultyService.createFaculty(facultyTest);
         facultyRepository.save(facultyTest);
 
-        assertEquals(facultyTest, facultyService.getFacultyById(facultyTest.getId()));
+        assertEquals(facultyTest, facultyService.getFacultyById(facultyTest.getId()).orElseThrow());
     }
 
     @Test
@@ -71,7 +72,7 @@ public class FacultyServiceTest {
         facultyService.createFaculty(facultyTest);
         facultyService.deleteFaculty(facultyTest.getId());
 
-        assertNull(facultyService.getFacultyById(facultyTest.getId()));
+        assertTrue(facultyService.getFacultyById(facultyTest.getId()).isEmpty());
     }
 
     @Test

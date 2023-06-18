@@ -8,6 +8,7 @@ import ru.hogwarts.school.model.Faculty;
 import ru.hogwarts.school.service.FacultyService;
 
 import java.util.Collection;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("faculty")
@@ -28,14 +29,14 @@ public class FacultyController {
 
     @GetMapping("/findAll")
     @Operation(summary = "Получение всех факультетов")
-    public Collection<Faculty> findAll() {
-        return facultyService.findAll();
+    public ResponseEntity<?> findAll() {
+        return ResponseEntity.ok(facultyService.findAll());
     }
 
     @GetMapping("{facultyId}")
     @Operation(summary = "Получение факультета по id")
     public ResponseEntity<?> getFacultyById(@PathVariable long facultyId) {
-        Faculty faculty = facultyService.getFacultyById(facultyId);
+        Optional<Faculty> faculty = facultyService.getFacultyById(facultyId);
         if (faculty == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
@@ -52,9 +53,9 @@ public class FacultyController {
     @DeleteMapping("{facultyId}")
     @Operation(summary = "Удаление факультета по di")
     public ResponseEntity<?> deleteFaculty(@PathVariable long facultyId) {
-        Faculty faculty = facultyService.getFacultyById(facultyId);
+        Optional<Faculty> faculty = facultyService.getFacultyById(facultyId);
         facultyService.deleteFaculty(facultyId);
-        if (faculty == null) {
+        if (faculty.isEmpty()) {
             return ResponseEntity.ok(null);
         }
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
@@ -74,5 +75,11 @@ public class FacultyController {
     @Operation(summary = "Получение факультетов с фильтром по цвету")
     public ResponseEntity<?> filterFacultyByColor(@PathVariable String color) {
         return ResponseEntity.ok(facultyService.filterFacultyByColor(color));
+    }
+
+    @GetMapping("/findFacultiesByNameOrColor/{nameOrColor}")
+    @Operation(summary = "Получение всех факультета по имени или цвету")
+    public ResponseEntity<?> findFacultiesByNameOrColor(@PathVariable String nameOrColor) {
+        return ResponseEntity.ok(facultyService.findFacultiesByNameOrColor(nameOrColor));
     }
 }
