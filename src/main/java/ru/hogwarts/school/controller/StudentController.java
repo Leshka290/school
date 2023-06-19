@@ -8,7 +8,6 @@ import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.service.StudentService;
 
 import java.util.Collection;
-import java.util.Optional;
 
 @RequestMapping("student")
 @RestController
@@ -29,15 +28,16 @@ public class StudentController {
 
     @GetMapping("/findAll")
     @Operation(summary = "Получение всех студентов")
-    public Collection<Student> findAll() {
-        return studentService.findAll();
+    public ResponseEntity<?> findAll() {
+        Collection<Student> students = studentService.findAll();
+        return ResponseEntity.ok(students);
     }
 
     @GetMapping("{studentId}")
     @Operation(summary = "Получение студента по id")
     public ResponseEntity<?> getStudentById(@PathVariable long studentId) {
-        Optional<Student> student = studentService.getStudentById(studentId);
-        if (student.isEmpty()) {
+        Student student = studentService.getStudentById(studentId);
+        if (student == null) {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(student);
@@ -53,9 +53,9 @@ public class StudentController {
     @DeleteMapping("{studentId}")
     @Operation(summary = "Удаление студента по id")
     public ResponseEntity<?> deleteStudent(@PathVariable long studentId) {
-        Optional<Student> student = studentService.getStudentById(studentId);
+        Student student = studentService.getStudentById(studentId);
         studentService.deleteStudent(studentId);
-        if (student.isEmpty()) {
+        if (student == null) {
             return ResponseEntity.ok(null);
         }
         return ResponseEntity.badRequest().build();
@@ -71,21 +71,23 @@ public class StudentController {
         return ResponseEntity.badRequest().build();
     }
 
-    @GetMapping("/filterAge/{age}")
+    @GetMapping("/{age}")
     @Operation(summary = "Получение студентов с фильтром по возрасту")
     public ResponseEntity<?> getFilterStudentByAge(@PathVariable int age) {
         return ResponseEntity.ok(studentService.filterStudentByAge(age));
     }
 
-    @GetMapping("/findByAgeBetween/{ageMin} & {ageMax}")
+    @GetMapping("/age")
     @Operation(summary = "Получение всех студентов с определенным возрастом")
-    public ResponseEntity<?> findByAgeBetween(@PathVariable int ageMin, @PathVariable int ageMax) {
-        return ResponseEntity.ok(studentService.findByAgeBetween(ageMin, ageMax));
+    public ResponseEntity<?> findByAgeBetween(@RequestParam int ageMin, @RequestParam int ageMax) {
+        Collection<Student> students = studentService.findByAgeBetween(ageMin, ageMax);
+        return ResponseEntity.ok(students);
     }
 
-    @GetMapping("/getStudentsByFaculty")
-    @Operation(summary = "Получение студентов факультета")
-    public ResponseEntity<?> getStudentsByFaculty(@RequestBody Faculty faculty) {
-        return ResponseEntity.ok(studentService.getStudentsByFaculty(faculty));
+    @GetMapping("/faculty/{studentId}")
+    @Operation(summary = "Получение факультета студента")
+    public ResponseEntity<?> getStudentsByFaculty(@PathVariable Long studentId) {
+        Faculty faculty = studentService.getStudentById(studentId).getFaculty();
+        return ResponseEntity.ok(faculty);
     }
 }

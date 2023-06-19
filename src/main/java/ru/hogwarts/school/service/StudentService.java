@@ -24,8 +24,8 @@ public class StudentService {
         return studentRepository.save(student);
     }
 
-    public Optional<Student> getStudentById(long studentId) {
-        return studentRepository.findById(studentId);
+    public Student getStudentById(long studentId) {
+        return studentRepository.findById(studentId).orElseThrow();
     }
 
     public Student updateStudent(Student student) {
@@ -51,9 +51,5 @@ public class StudentService {
 //                .filter(e -> e.getAge() > ageMin && e.getAge() < ageMax)
 //                .collect(Collectors.toList());
         return studentRepository.findByAgeBetween(ageMin, ageMax);
-    }
-
-    public Collection<Student> getStudentsByFaculty(Faculty faculty) {
-        return studentRepository.getStudentsByFaculty(faculty);
     }
 }

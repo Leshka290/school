@@ -8,7 +8,7 @@ import ru.hogwarts.school.model.Faculty;
 import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.service.FacultyService;
 
-import java.util.Optional;
+import java.util.List;
 
 @RestController
 @RequestMapping("faculty")
@@ -36,7 +36,7 @@ public class FacultyController {
     @GetMapping("{facultyId}")
     @Operation(summary = "Получение факультета по id")
     public ResponseEntity<?> getFacultyById(@PathVariable long facultyId) {
-        Optional<Faculty> faculty = facultyService.getFacultyById(facultyId);
+        Faculty faculty = facultyService.getFacultyById(facultyId);
         if (faculty == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
@@ -51,11 +51,11 @@ public class FacultyController {
     }
 
     @DeleteMapping("{facultyId}")
-    @Operation(summary = "Удаление факультета по di")
+    @Operation(summary = "Удаление факультета по id")
     public ResponseEntity<?> deleteFaculty(@PathVariable long facultyId) {
-        Optional<Faculty> faculty = facultyService.getFacultyById(facultyId);
+        Faculty faculty = facultyService.getFacultyById(facultyId);
         facultyService.deleteFaculty(facultyId);
-        if (faculty.isEmpty()) {
+        if (faculty == null) {
             return ResponseEntity.ok(null);
         }
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
@@ -71,12 +71,6 @@ public class FacultyController {
         return ResponseEntity.badRequest().build();
     }
 
-//    @GetMapping("/filterColor/{color}")
-//    @Operation(summary = "Получение факультетов с фильтром по цвету")
-//    public ResponseEntity<?> filterFacultyByColor(@PathVariable String color) {
-//        return ResponseEntity.ok(facultyService.filterFacultyByColor(color));
-//    }
-
     @GetMapping()
     @Operation(summary = "Получение всех факультов по имени или цвету")
     public ResponseEntity<?> findFacultiesByNameOrColor(@RequestParam(required = false) String name
@@ -84,9 +78,10 @@ public class FacultyController {
         return ResponseEntity.ok(facultyService.findFacultiesByNameOrColor(name, color));
     }
 
-    @GetMapping("/getFacultyByStudent")
-    @Operation(summary = "Получение факультета студента")
-    public ResponseEntity<?> getFacultyByStudent(@RequestBody Student student) {
-        return ResponseEntity.ok(facultyService.getFacultyByStudent(student));
+    @GetMapping("/students/{studentId}")
+    @Operation(summary = "Получение студентов факультета")
+    public ResponseEntity<List<Student>> getFacultyByStudent(@PathVariable Long studentId) {
+        List<Student> students = facultyService.getFacultyById(studentId).getStudentList();
+        return ResponseEntity.ok(students);
     }
 }

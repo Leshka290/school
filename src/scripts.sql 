@@ -1,4 +1,4 @@
- select * from student where  20 < age and age < 30
+ select * from student where age between 20 and 30
  select name from student
  select * from student where  name like '%o%'
  select * from student where age < id
