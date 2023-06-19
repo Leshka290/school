@@ -33,10 +33,10 @@ public class FacultyController {
         return ResponseEntity.ok(facultyService.findAll());
     }
 
-    @GetMapping("{facultyId}")
+    @GetMapping("/{id}")
     @Operation(summary = "Получение факультета по id")
-    public ResponseEntity<?> getFacultyById(@PathVariable long facultyId) {
-        Faculty faculty = facultyService.getFacultyById(facultyId);
+    public ResponseEntity<Faculty> getFacultyById(@PathVariable Long id) {
+        Faculty faculty = facultyService.getFacultyById(id);
         if (faculty == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
@@ -52,7 +52,7 @@ public class FacultyController {
 
     @DeleteMapping("{facultyId}")
     @Operation(summary = "Удаление факультета по id")
-    public ResponseEntity<?> deleteFaculty(@PathVariable long facultyId) {
+    public ResponseEntity<?> deleteFaculty(@PathVariable Long facultyId) {
         Faculty faculty = facultyService.getFacultyById(facultyId);
         facultyService.deleteFaculty(facultyId);
         if (faculty == null) {

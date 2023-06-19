@@ -1,6 +1,7 @@
 package ru.hogwarts.school.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.hogwarts.school.model.Faculty;
@@ -33,12 +34,12 @@ public class StudentController {
         return ResponseEntity.ok(students);
     }
 
-    @GetMapping("{studentId}")
+    @GetMapping("{id}")
     @Operation(summary = "Получение студента по id")
-    public ResponseEntity<?> getStudentById(@PathVariable long studentId) {
-        Student student = studentService.getStudentById(studentId);
+    public ResponseEntity<Student> getStudentById(@PathVariable long id) {
+        Student student = studentService.getStudentById(id);
         if (student == null) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
         return ResponseEntity.ok(student);
     }
@@ -50,9 +51,9 @@ public class StudentController {
         return ResponseEntity.ok(updateStudent);
     }
 
-    @DeleteMapping("{studentId}")
+    @DeleteMapping("/{studentId}")
     @Operation(summary = "Удаление студента по id")
-    public ResponseEntity<?> deleteStudent(@PathVariable long studentId) {
+    public ResponseEntity<Void> deleteStudent(@PathVariable Long studentId) {
         Student student = studentService.getStudentById(studentId);
         studentService.deleteStudent(studentId);
         if (student == null) {
@@ -67,11 +68,12 @@ public class StudentController {
         studentService.deleteStudent(student);
         if (student == null) {
             return ResponseEntity.ok(null);
+        } else {
+            return ResponseEntity.badRequest().build();
         }
-        return ResponseEntity.badRequest().build();
     }
 
-    @GetMapping("/{age}")
+    @GetMapping("/filterStudentAge/{age}")
     @Operation(summary = "Получение студентов с фильтром по возрасту")
     public ResponseEntity<?> getFilterStudentByAge(@PathVariable int age) {
         return ResponseEntity.ok(studentService.filterStudentByAge(age));
