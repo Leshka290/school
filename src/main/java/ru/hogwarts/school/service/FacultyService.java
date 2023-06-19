@@ -8,13 +8,12 @@ import ru.hogwarts.school.repository.FacultyRepository;
 
 import java.util.Collection;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class FacultyService {
 
     @Autowired
-    FacultyRepository facultyRepository;
+    private FacultyRepository facultyRepository;
 
     public Collection<Faculty> findAll() {
         return facultyRepository.findAll();
@@ -43,21 +42,24 @@ public class FacultyService {
         facultyRepository.delete(faculty);
     }
 
-    public Collection<Faculty> filterFacultyByColor(String color) {
-        return facultyRepository.findAll().stream()
-                .filter(e -> e.getColor().equals(color))
-                .collect(Collectors.toList());
+//    public Collection<Faculty> filterFacultyByColor(String color) {
+//        return facultyRepository.findAll().stream()
+//                .filter(e -> e.getColor().equals(color))
+//                .collect(Collectors.toList());
+//    }
+
+    public Faculty findFacultiesByNameOrColor(String name, String color) {
+//        return facultyRepository.findAll().stream()
+//                .filter(e -> e.getName().equalsIgnoreCase(nameOrColor) || e.getColor().equalsIgnoreCase(nameOrColor))
+//                .findFirst().orElseThrow();
+        return facultyRepository.findFacultiesByNameIgnoreCaseOrColorIgnoreCase(name, color);
     }
 
-    public Faculty findFacultiesByNameOrColor(String nameOrColor) {
-        return facultyRepository.findAll().stream()
-                .filter(e -> e.getName().equalsIgnoreCase(nameOrColor) || e.getColor().equalsIgnoreCase(nameOrColor))
-                .findFirst().orElseThrow();
-    }
+//    public Faculty getFacultyByStudentList(Collection<Student> studentList) {
+//        return facultyRepository.findFacultyByStudentList(studentList);
+//    }
 
-    public Faculty findFacultiesByStudent(Student student) {
-        return facultyRepository.findAll().stream()
-                .peek(e -> e.getStudentList().get((int)student.getId()))
-                .findFirst().orElseThrow();
+    public Optional<Faculty> getFacultyByStudent(Student student) {
+        return facultyRepository.findById(student.getFaculty().getId());
     }
 }

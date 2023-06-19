@@ -5,16 +5,16 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.hogwarts.school.model.Faculty;
+import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.service.FacultyService;
 
-import java.util.Collection;
 import java.util.Optional;
 
 @RestController
 @RequestMapping("faculty")
 public class FacultyController {
 
-    FacultyService facultyService;
+    private final FacultyService facultyService;
 
     public FacultyController(FacultyService facultyService) {
         this.facultyService = facultyService;
@@ -71,15 +71,22 @@ public class FacultyController {
         return ResponseEntity.badRequest().build();
     }
 
-    @GetMapping("/filterColor/{color}")
-    @Operation(summary = "Получение факультетов с фильтром по цвету")
-    public ResponseEntity<?> filterFacultyByColor(@PathVariable String color) {
-        return ResponseEntity.ok(facultyService.filterFacultyByColor(color));
+//    @GetMapping("/filterColor/{color}")
+//    @Operation(summary = "Получение факультетов с фильтром по цвету")
+//    public ResponseEntity<?> filterFacultyByColor(@PathVariable String color) {
+//        return ResponseEntity.ok(facultyService.filterFacultyByColor(color));
+//    }
+
+    @GetMapping()
+    @Operation(summary = "Получение всех факультов по имени или цвету")
+    public ResponseEntity<?> findFacultiesByNameOrColor(@RequestParam(required = false) String name
+            , @RequestParam(required = false) String color) {
+        return ResponseEntity.ok(facultyService.findFacultiesByNameOrColor(name, color));
     }
 
-    @GetMapping("/findFacultiesByNameOrColor/{nameOrColor}")
-    @Operation(summary = "Получение всех факультета по имени или цвету")
-    public ResponseEntity<?> findFacultiesByNameOrColor(@PathVariable String nameOrColor) {
-        return ResponseEntity.ok(facultyService.findFacultiesByNameOrColor(nameOrColor));
+    @GetMapping("/getFacultyByStudent")
+    @Operation(summary = "Получение факультета студента")
+    public ResponseEntity<?> getFacultyByStudent(@RequestBody Student student) {
+        return ResponseEntity.ok(facultyService.getFacultyByStudent(student));
     }
 }
