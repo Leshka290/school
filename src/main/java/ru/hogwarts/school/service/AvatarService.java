@@ -7,8 +7,11 @@ import org.springframework.web.multipart.MultipartFile;
 import ru.hogwarts.school.model.Avatar;
 import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.repository.AvatarRepository;
+import ru.hogwarts.school.repository.StudentRepository;
 
-import javax.transaction.Transactional;
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -16,7 +19,6 @@ import java.nio.file.Path;
 import static java.nio.file.StandardOpenOption.CREATE_NEW;
 
 @Service
-@Transactional
 public class AvatarService {
 
     @Value("${avatars.dir.path}")
@@ -25,14 +27,15 @@ public class AvatarService {
     @Autowired
     private AvatarRepository avatarRepository;
 
+    @Autowired
+    private StudentRepository studentRepository;
 
     public Avatar findAvatar(Long studentId) {
-        return avatarRepository.findByStudentId(studentId).orElseThrow();
+        return avatarRepository.findByStudentId(studentId).orElse(new Avatar());
     }
 
     public void uploadAvatar(Long studentId, MultipartFile file) throws IOException {
-        Student student = new StudentService().getStudentById(studentId);
-
+        Student student = studentRepository.findById(studentId).orElseThrow();
         Path filePath = Path.of(avatarsDir, studentId + "." + getExtension(file.getOriginalFilename()));
         Files.createDirectories(filePath.getParent());
         Files.deleteIfExists(filePath);
@@ -45,17 +48,37 @@ public class AvatarService {
             bis.transferTo(bos);
         }
 
+//        Avatar avatar = findAvatar(studentId);
         Avatar avatar = avatarRepository.findByStudentId(studentId).orElseGet(Avatar::new);
         avatar.setStudent(student);
         avatar.setFilePath(filePath.toString());
         avatar.setFileSize(file.getSize());
         avatar.setMediaType(file.getContentType());
-        avatar.setData(file.getBytes());
+        avatar.setData(generateDateFromDB(filePath));
+//        avatar.setData(file.getBytes());
 
         avatarRepository.save(avatar);
     }
 
     private String getExtension(String fileName) {
         return fileName.substring(fileName.lastIndexOf(".") + 1);
+    }
+
+    private byte[] generateDateFromDB(Path filePath) throws IOException {
+        try (
+                InputStream is = Files.newInputStream(filePath);
+                BufferedInputStream bis = new BufferedInputStream(is, 1024);
+                ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+            BufferedImage image = ImageIO.read(bis);
+
+            int height = image.getHeight() / (image.getWidth() / 100);
+            BufferedImage preview = new BufferedImage(100, height, image.getType());
+            Graphics2D graphics2D = preview.createGraphics();
+            graphics2D.drawImage(image, 0, 0, 100, height, null);
+            graphics2D.dispose();
+
+            ImageIO.write(preview, getExtension(filePath.getFileName().toString()), baos);
+            return baos.toByteArray();
+        }
     }
 }

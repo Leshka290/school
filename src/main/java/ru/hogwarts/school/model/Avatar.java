@@ -1,5 +1,7 @@
 package ru.hogwarts.school.model;
 
+import org.hibernate.annotations.Type;
+
 import javax.persistence.*;
 import java.util.Arrays;
 import java.util.Objects;
@@ -8,14 +10,26 @@ import java.util.Objects;
 public class Avatar {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue
     private long id;
     private String filePath;
     private long fileSize;
     private String mediaType;
 
     @Lob
+    @Type(type="org.hibernate.type.BinaryType")
     private byte[] data;
+
+    public Avatar() {
+    }
+
+    public Avatar(long id, String filePath, long fileSize, String mediaType, Student student) {
+        this.id = id;
+        this.filePath = filePath;
+        this.fileSize = fileSize;
+        this.mediaType = mediaType;
+        this.student = student;
+    }
 
     @OneToOne
     @JoinColumn(name = "student_id")
