@@ -53,22 +53,17 @@ public class FacultyController {
     @DeleteMapping("{facultyId}")
     @Operation(summary = "Удаление факультета по id")
     public ResponseEntity<?> deleteFaculty(@PathVariable Long facultyId) {
-        Faculty faculty = facultyService.getFacultyById(facultyId);
         facultyService.deleteFaculty(facultyId);
-        if (faculty == null) {
-            return ResponseEntity.ok(null);
-        }
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+            return ResponseEntity.ok().build();
+
     }
 
     @DeleteMapping()
     @Operation(summary = "Удаление факультета")
     public ResponseEntity<?> deleteFaculty(@RequestBody Faculty faculty) {
         facultyService.deleteFaculty(faculty);
-        if (faculty == null) {
-            return ResponseEntity.ok(null);
-        }
-        return ResponseEntity.badRequest().build();
+            return ResponseEntity.ok().build();
+
     }
 
     @GetMapping()

@@ -54,23 +54,16 @@ public class StudentController {
     @DeleteMapping("/{studentId}")
     @Operation(summary = "Удаление студента по id")
     public ResponseEntity<Void> deleteStudent(@PathVariable Long studentId) {
-        Student student = studentService.getStudentById(studentId);
         studentService.deleteStudent(studentId);
-        if (student == null) {
-            return ResponseEntity.ok(null);
-        }
-        return ResponseEntity.badRequest().build();
+            return ResponseEntity.ok().build();
+
     }
 
     @DeleteMapping()
     @Operation(summary = "Удаление студента")
     public ResponseEntity<?> deleteStudent(@RequestBody Student student) {
         studentService.deleteStudent(student);
-        if (student == null) {
-            return ResponseEntity.ok(null);
-        } else {
-            return ResponseEntity.badRequest().build();
-        }
+            return ResponseEntity.ok().build();
     }
 
     @GetMapping("/filterStudentAge/{age}")

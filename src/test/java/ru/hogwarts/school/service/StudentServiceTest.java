@@ -26,7 +26,7 @@ public class StudentServiceTest {
     private final Student studentTest = new Student();
 
     public Student getStudentTest(Student student) {
-        student.setId(1);
+        student.setId(1L);
         student.setName("Petr");
         student.setAge(30);
         return student;
@@ -48,7 +48,7 @@ public class StudentServiceTest {
         studentService.createStudent(studentTest);
         studentRepository.save(studentTest);
 
-        assertEquals(studentTest, studentService.getStudentById(studentTest.getId()).orElseThrow());
+        assertEquals(studentTest, studentService.getStudentById(studentTest.getId()));
     }
 
     @Test
@@ -71,7 +71,7 @@ public class StudentServiceTest {
         studentService.createStudent(studentTest);
         studentService.deleteStudent(studentTest.getId());
 
-        assertTrue(studentService.getStudentById(studentTest.getId()).isEmpty());
+        assertNull(studentService.getStudentById(studentTest.getId()));
     }
 
     @Test

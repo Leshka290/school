@@ -49,7 +49,7 @@ public class FacultyServiceTest {
         facultyService.createFaculty(facultyTest);
         facultyRepository.save(facultyTest);
 
-        assertEquals(facultyTest, facultyService.getFacultyById(facultyTest.getId()).orElseThrow());
+        assertEquals(facultyTest, facultyService.getFacultyById(facultyTest.getId()));
     }
 
     @Test
@@ -72,7 +72,7 @@ public class FacultyServiceTest {
         facultyService.createFaculty(facultyTest);
         facultyService.deleteFaculty(facultyTest.getId());
 
-        assertTrue(facultyService.getFacultyById(facultyTest.getId()).isEmpty());
+        assertNull(facultyService.getFacultyById(facultyTest.getId()));
     }
 
     @Test
