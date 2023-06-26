@@ -26,7 +26,7 @@ public class StudentService {
 
     public Student getStudentById(long studentId) {
         Optional<Student> optional = studentRepository.findById(studentId);
-        if(optional.isEmpty()){
+        if (optional.isEmpty()) {
             throw new NoSuchElementException();
         } else {
             return optional.get();
@@ -56,5 +56,22 @@ public class StudentService {
 //                .filter(e -> e.getAge() > ageMin && e.getAge() < ageMax)
 //                .collect(Collectors.toList());
         return studentRepository.findByAgeBetween(ageMin, ageMax);
+    }
+
+    public Long getStudentsCount() {
+        return studentRepository.count();
+    }
+
+    public int getAvgAgeStudents() {
+        return studentRepository.getAvgAgeStudents();
+//        return studentRepository.findAll().stream().collect(Collectors.averagingInt(Student::getAge)).intValue();
+    }
+
+    public Collection<Student> getLastStudents() {
+        return studentRepository.getLastStudents();
+//        return studentRepository.findAll().stream()
+//                .sorted(Comparator.comparingInt(Student::getAge).reversed())
+//                .limit(5)
+//                .collect(Collectors.toList());
     }
 }

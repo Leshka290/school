@@ -55,7 +55,7 @@ public class StudentController {
     @Operation(summary = "Удаление студента по id")
     public ResponseEntity<Void> deleteStudent(@PathVariable Long studentId) {
         studentService.deleteStudent(studentId);
-            return ResponseEntity.ok().build();
+        return ResponseEntity.ok().build();
 
     }
 
@@ -63,7 +63,7 @@ public class StudentController {
     @Operation(summary = "Удаление студента")
     public ResponseEntity<?> deleteStudent(@RequestBody Student student) {
         studentService.deleteStudent(student);
-            return ResponseEntity.ok().build();
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/filterStudentAge/{age}")
@@ -84,5 +84,33 @@ public class StudentController {
     public ResponseEntity<?> getStudentsByFaculty(@PathVariable Long studentId) {
         Faculty faculty = studentService.getStudentById(studentId).getFaculty();
         return ResponseEntity.ok(faculty);
+    }
+
+    @GetMapping("/students")
+    @Operation(summary = "Получение количества студентов")
+    public ResponseEntity<?> getStudentsCount() {
+        Long count = studentService.getStudentsCount();
+        return ResponseEntity.ok(count);
+    }
+
+//    @GetMapping("/students/avgAge2")
+//    @Operation(summary = "Получение количества студентов")
+//    public ResponseEntity<?> getAvgAgeStudentss () {
+//        Long count = studentService.getStudentsCount();
+//        return ResponseEntity.ok(count);
+//    }
+
+    @GetMapping("/students/avgAge")
+    @Operation(summary = "Получение среднего возраста студентов")
+    public ResponseEntity<?> getAvgAgeStudents() {
+        int avgAge = studentService.getAvgAgeStudents();
+        return ResponseEntity.ok(avgAge);
+    }
+
+    @GetMapping("/lastStudents")
+    @Operation(summary = "Получение последних 5 студентов")
+    public ResponseEntity<?> getLastStudents() {
+        Collection<Student> students = studentService.getLastStudents();
+        return ResponseEntity.ok(students);
     }
 }
