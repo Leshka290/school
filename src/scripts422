@@ -1,0 +1,15 @@
+CREATE TABLE human
+(
+    id             bigint unique  NOT NULL primary key,
+    name           varchar unique NOT NULL,
+    age            int4 check (age > 18),
+    abilityToDrive boolean,
+    car_id         bigint references car (id)
+);
+CREATE TABLE car
+(
+    id    bigint unique  NOT NULL primary key,
+    brand varchar unique NOT NULL,
+    model varchar unique NOT NULL,
+    price money
+)

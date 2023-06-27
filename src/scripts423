@@ -1,0 +1,6 @@
+SELECT student.name, student.age, faculty.name
+from faculty
+         inner join student on faculty.id = student.faculty_id;
+SELECT student.id, student.name, student.age
+from student
+         inner join avatar a on student.avatar_id = a.id
