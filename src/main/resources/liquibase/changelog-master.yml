@@ -1,7 +1,7 @@
 databaseChangeLog:
   - include:
-    file: liquibase/scripts/lesson-three.sql
+      file: liquibase/scripts/lesson_three.sql
   - include:
-    file: liquibase/scripts/student-name.sql
+      file: liquibase/scripts/student_name.sql
   - include:
-    file: liquibase/scripts/faculty-name-color.sql
+      file: liquibase/scripts/faculty_name_color.sql
