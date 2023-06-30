@@ -95,7 +95,7 @@ public class StudentController {
 
 //    @GetMapping("/students/avgAge2")
 //    @Operation(summary = "Получение количества студентов")
-//    public ResponseEntity<?> getAvgAgeStudentss () {
+//    public ResponseEntity<?> getAvgAgeStudents () {
 //        Long count = studentService.getStudentsCount();
 //        return ResponseEntity.ok(count);
 //    }
