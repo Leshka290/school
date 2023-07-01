@@ -1,5 +1,7 @@
 package ru.hogwarts.school.service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
@@ -32,8 +34,13 @@ public class AvatarService {
     @Autowired
     private StudentRepository studentRepository;
 
+    Logger logger = LoggerFactory.getLogger(AvatarService.class);
+
     public Avatar findAvatar(Long studentId) {
-        return avatarRepository.findByStudentId(studentId).orElse(new Avatar());
+        Avatar avatar = avatarRepository.findByStudentId(studentId).orElse(new Avatar());
+
+        logger.info("Was invoked method for find avatar {}", avatar);
+        return avatar;
     }
 
     public void uploadAvatar(Long studentId, MultipartFile file) throws IOException {
@@ -60,10 +67,15 @@ public class AvatarService {
 //        avatar.setData(file.getBytes());
 
         avatarRepository.save(avatar);
+
+        logger.info("Was invoked method for upload avatar");
     }
 
     private String getExtension(String fileName) {
-        return fileName.substring(fileName.lastIndexOf(".") + 1);
+        String extension = fileName.substring(fileName.lastIndexOf(".") + 1);
+
+        logger.info("Was invoked method for get extension {}", extension);
+        return extension;
     }
 
     private byte[] generateDateFromDB(Path filePath) throws IOException {
@@ -80,13 +92,20 @@ public class AvatarService {
             graphics2D.dispose();
 
             ImageIO.write(preview, getExtension(filePath.getFileName().toString()), baos);
-            return baos.toByteArray();
+
+            byte[] bytes = baos.toByteArray();
+
+            logger.info("Was invoked method for generate date from DB {}", bytes);
+            return bytes;
         }
     }
 
     public List<Avatar> getAllAvatars(Integer pageNumber, Integer pageSize) {
         var pageRequest = PageRequest.of(pageNumber - 1, pageSize);
-        return avatarRepository.findAll(pageRequest).getContent();
+        List<Avatar> avatars = avatarRepository.findAll(pageRequest).getContent();
+
+        logger.info("Was invoked method for get all avatars {}", avatars);
+        return avatars;
 
     }
 }
