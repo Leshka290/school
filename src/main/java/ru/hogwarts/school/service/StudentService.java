@@ -8,8 +8,10 @@ import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.repository.StudentRepository;
 
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.NoSuchElementException;
 import java.util.Optional;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @Service
@@ -104,5 +106,22 @@ public class StudentService {
 //                .sorted(Comparator.comparingInt(Student::getAge).reversed())
 //                .limit(5)
 //                .collect(Collectors.toList());
+    }
+
+    public Collection<String> findStudentsFirstCharA() {
+        Collection<String> studentCollection = studentRepository.findAll().stream()
+                .filter(e -> e.getName().startsWith("A"))
+                .sorted(Comparator.comparing(Student::getName))
+                .map(e -> e.getName().toUpperCase())
+                .collect(Collectors.toList());
+
+        logger.info("Was invoked method for find name first char equals A {}", studentCollection);
+        return studentCollection;
+    }
+
+    public int getAvgAgeStudentsStream() {
+        int avgAge = studentRepository.findAll().stream().collect(Collectors.averagingInt(Student::getAge)).intValue();
+        logger.info("Was invoked method for get average age students {}", avgAge);
+        return avgAge;
     }
 }

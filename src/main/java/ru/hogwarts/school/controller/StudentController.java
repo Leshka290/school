@@ -107,10 +107,25 @@ public class StudentController {
         return ResponseEntity.ok(avgAge);
     }
 
+    @GetMapping("/students/avgAgeStream")
+    @Operation(summary = "Получение среднего возраста студентов с помощью стримов")
+    public ResponseEntity<?> getAvgAgeStudentsStream() {
+        int avgAge = studentService.getAvgAgeStudentsStream();
+        return ResponseEntity.ok(avgAge);
+    }
+
+
     @GetMapping("/lastStudents")
     @Operation(summary = "Получение последних 5 студентов")
     public ResponseEntity<?> getLastStudents() {
         Collection<Student> students = studentService.getLastStudents();
+        return ResponseEntity.ok(students);
+    }
+
+    @GetMapping("/students/firstCharA")
+    @Operation(summary = "Получение имен студентов начинающихся с буквы А")
+    public ResponseEntity<?> findStudentsFirstCharA() {
+        Collection<String> students = studentService.findStudentsFirstCharA();
         return ResponseEntity.ok(students);
     }
 }

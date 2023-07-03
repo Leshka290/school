@@ -79,4 +79,18 @@ public class FacultyController {
         List<Student> students = facultyService.getFacultyById(studentId).getStudentList();
         return ResponseEntity.ok(students);
     }
+
+    @GetMapping("/facultyMax")
+    @Operation(summary = "Получение самого длинного факультета")
+    public ResponseEntity<String> getFacultyByStudent() {
+        String faculty = facultyService.findFacultyMaxLength();
+        return ResponseEntity.ok(faculty);
+    }
+
+    @GetMapping("/sum")
+    @Operation(summary = "Получение sum")
+    public ResponseEntity<?> getSum() {
+        int sum = facultyService.getSum();
+        return ResponseEntity.ok(sum);
+    }
 }
