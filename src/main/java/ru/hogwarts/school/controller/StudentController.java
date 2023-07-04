@@ -128,4 +128,16 @@ public class StudentController {
         Collection<String> students = studentService.findStudentsFirstCharA();
         return ResponseEntity.ok(students);
     }
+
+    @GetMapping("/getStudentsOnThreads")
+    @Operation(summary = "Получение студентов в разных потоках")
+    public void getStudentsOnThreads() {
+        studentService.getStudentsOnThreads();
+    }
+
+    @GetMapping("/getStudentsOnThreadsSynchro")
+    @Operation(summary = "Получение студентов в разных синхронизированных потоках")
+    public void getStudentsOnThreadsSynchro() {
+        studentService.getStudentsOnThreadsSynchro();
+    }
 }

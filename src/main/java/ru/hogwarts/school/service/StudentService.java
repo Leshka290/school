@@ -124,4 +124,66 @@ public class StudentService {
         logger.info("Was invoked method for get average age students {}", avgAge);
         return avgAge;
     }
+
+    public void getStudentsOnThreads() {
+        int count = 0;
+        int maxCount = 6;
+
+        while (count < maxCount) {
+            printStudent(count++);
+            printStudent(count++);
+
+            int finalI = count++;
+            int finalCount = count++;
+
+            new Thread(() -> {
+                printStudent(finalI);
+                printStudent(finalCount);
+            }).start();
+
+            int finalI1 = count++;
+            int finalCount1 = count++;
+
+            new Thread(() -> {
+                printStudent(finalI1);
+                printStudent(finalCount1);
+            }).start();
+        }
+    }
+
+    public void getStudentsOnThreadsSynchro() {
+        int count = 0;
+        int maxCount = 6;
+
+        while (count < maxCount) {
+            printStudentSynchro(count++);
+            printStudentSynchro(count++);
+
+            int finalI = count++;
+            int finalCount = count++;
+
+            new Thread(() -> {
+                printStudentSynchro(finalI);
+                printStudentSynchro(finalCount);
+            }).start();
+
+            int finalI1 = count++;
+            int finalCount1 = count++;
+
+            new Thread(() -> {
+                printStudentSynchro(finalI1);
+                printStudentSynchro(finalCount1);
+            }).start();
+        }
+    }
+
+    private void printStudent(int count) {
+        System.out.println(studentRepository.findAll().get(count).toString());
+    }
+
+    private void printStudentSynchro(int count) {
+        synchronized (StudentService.class) {
+            System.out.println(studentRepository.findAll().get(count).toString());
+        }
+    }
 }
