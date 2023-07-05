@@ -7,11 +7,8 @@ import org.springframework.stereotype.Service;
 import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.repository.StudentRepository;
 
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.NoSuchElementException;
-import java.util.Optional;
-import java.util.regex.Pattern;
+import java.sql.Timestamp;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -127,63 +124,49 @@ public class StudentService {
 
     public void getStudentsOnThreads() {
         int count = 0;
-        int maxCount = 6;
 
-        while (count < maxCount) {
-            printStudent(count++);
-            printStudent(count++);
+        List<Student> students = studentRepository.findAll();
 
-            int finalI = count++;
-            int finalCount = count++;
+        System.out.println(students.get(count++));
+        System.out.println(students.get(count++));
 
-            new Thread(() -> {
-                printStudent(finalI);
-                printStudent(finalCount);
-            }).start();
+        printStudent(students, count++);
+        count++;
 
-            int finalI1 = count++;
-            int finalCount1 = count++;
-
-            new Thread(() -> {
-                printStudent(finalI1);
-                printStudent(finalCount1);
-            }).start();
-        }
+        printStudent(students, count);
     }
 
     public void getStudentsOnThreadsSynchro() {
         int count = 0;
-        int maxCount = 6;
 
-        while (count < maxCount) {
-            printStudentSynchro(count++);
-            printStudentSynchro(count++);
+        List<Student> students = studentRepository.findAll();
 
-            int finalI = count++;
-            int finalCount = count++;
+        System.out.println(students.get(count++));
+        System.out.println(students.get(count++));
 
-            new Thread(() -> {
-                printStudentSynchro(finalI);
-                printStudentSynchro(finalCount);
-            }).start();
+        printStudentSynchro(students, count++);
+        count++;
 
-            int finalI1 = count++;
-            int finalCount1 = count++;
-
-            new Thread(() -> {
-                printStudentSynchro(finalI1);
-                printStudentSynchro(finalCount1);
-            }).start();
-        }
+        printStudentSynchro(students, count);
     }
 
-    private void printStudent(int count) {
-        System.out.println(studentRepository.findAll().get(count).toString());
-    }
-
-    private void printStudentSynchro(int count) {
+    private void printStudentSynchro(List<Student> students, int count) {
         synchronized (StudentService.class) {
-            System.out.println(studentRepository.findAll().get(count).toString());
+            int finalCount = count + 1;
+
+            new Thread(() -> {
+                System.out.println(students.get(count));
+                System.out.println(students.get(finalCount));
+            }).start();
         }
+    }
+
+    private void printStudent(List<Student> students, int count) {
+        int finalCount = count + 1;
+
+        new Thread(() -> {
+            System.out.println(students.get(count));
+            System.out.println(students.get(finalCount));
+        }).start();
     }
 }
