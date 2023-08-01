@@ -2,12 +2,16 @@ package ru.hogwarts.school.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.List;
 import java.util.Objects;
 
 @Entity
+@Getter
+@Setter
 @JsonIgnoreProperties(value = {"studentList"})
 public class Faculty {
 
@@ -19,38 +23,6 @@ public class Faculty {
     @OneToMany(mappedBy = "faculty")
     @JsonManagedReference
     private List<Student> studentList;
-
-    public long getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getColor() {
-        return color;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setColor(String color) {
-        this.color = color;
-    }
-
-    public List<Student> getStudentList() {
-        return studentList;
-    }
-
-    public void setStudentList(List<Student> studentList) {
-        this.studentList = studentList;
-    }
 
     @Override
     public boolean equals(Object o) {
